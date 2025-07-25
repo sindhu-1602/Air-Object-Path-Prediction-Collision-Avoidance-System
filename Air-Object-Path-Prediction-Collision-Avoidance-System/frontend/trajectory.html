@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aircraft Trajectory Plot</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #131523;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .btn-back {
+      display: block;
+      margin: 10px auto 30px auto;
+      padding: 10px 20px;
+      background-color: #3cb2f2;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-back:hover {
+      background-color: #3498db;
+    }
+
+    .chart-container {
+      width: 50%;
+      margin: 15px auto;
+    }
+
+    canvas {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00000070;
+      width: 100%;
+      height: 200px; /* Decreased height */
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Aircraft Trajectory</h1>
+
+  <!-- Back to Dashboard Button -->
+  <button class="btn-back" onclick="window.location.href='dashboard.html'">← Back to Dashboard</button>
+
+  <!-- Chart Sections -->
+  <div class="chart-container">
+    <canvas id="chartX"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="chartY"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="chartZ"></canvas>
+  </div>
+
+  <script>
+    fetch("http://127.0.0.1:5000/api/aircraft")
+      .then(response => response.json())
+      .then(data => {
+        const time = data.time;
+        const posX = data.x;
+        const posY = data.y;
+        const posZ = data.z;
+
+        const plotChart = (id, label, color, values) => {
+          new Chart(document.getElementById(id), {
+            type: 'line',
+            data: {
+              labels: time,
+              datasets: [{
+                label: label,
+                data: values,
+                borderColor: color,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { labels: { color: 'black' } }
+              },
+              scales: {
+                x: {
+                  title: { display: true, text: 'Time', color: 'black' },
+                  ticks: { color: 'black' }
+                },
+                y: {
+                  title: { display: true, text: 'Position', color: 'black' },
+                  ticks: { color: 'black' }
+                }
+              }
+            }
+          });
+        };
+
+        plotChart("chartX", "Time vs Position X", "cyan", posX);
+        plotChart("chartY", "Time vs Position Y", "magenta", posY);
+        plotChart("chartZ", "Time vs Position Z", "lime", posZ);
+      });
+  </script>
+
+</body>
+</html>
+<!-- This is the trajectory.html file that plots the aircraft trajectory using Chart.js -->
+<!-- It fetches data from the backend API and displays it in three separate line charts for X

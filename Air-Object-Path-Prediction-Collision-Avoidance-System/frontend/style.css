@@ -1,0 +1,67 @@
+body {
+  background-color: #0c1f3f;
+  font-family: sans-serif;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.form-box, .dashboard-box {
+  background: #1e2f4d;
+  padding: 30px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 0 15px #00000070;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  width: 100%;
+  margin: 10px 0;
+  background: #3cb2f2;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+body {
+  background-color: #121212;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.chart-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  height: 100vh; /* Fit all charts in one screen */
+  box-sizing: border-box;
+}
+
+canvas.chart {
+  width: 100%;
+  max-width: 600px;
+  height: 25vh !important;  /* Each chart takes 25% height of screen */
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00000070;
+}

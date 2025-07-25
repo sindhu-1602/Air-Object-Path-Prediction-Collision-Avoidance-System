@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | DRDL Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: #091827;
+      color: rgb(248, 244, 244);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dashboard-box {
+      text-align: center;
+      padding: 20px;
+      background-color: #161313;
+      border-radius: 0 0 15px 15px;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #38a8e4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3498db;
+    }
+
+    .chart-container {
+      width: 90%;
+      margin: auto;
+      padding: 20px;
+    }
+
+    canvas {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00000070;
+      margin-bottom: 30px;
+    }
+
+    .chart-title {
+      text-align: center;
+      margin-top: 40px;
+      color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Dashboard header and buttons -->
+  <div class="dashboard-box">
+    <h2 id="welcomeMessage">Welcome, user</h2>
+    <button onclick="location.href='change-password.html'">Change Password</button>
+    <button onclick="window.location.href='trajectory.html'">Plot Trajectory</button>
+    <button onclick="location.href='index.html'">Logout</button>
+  </div>
+
+  <!-- Hidden chart section -->
+  <div id="chartSection" style="display: none;">
+    <h2 class="chart-title">Aircraft Position Plots</h2>
+
+    <div class="chart-container">
+      <canvas id="chartX" height="150"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="chartY" height="150"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="chartZ" height="150"></canvas>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- JavaScript to handle username + plotting -->
+  <script>
+    // Show username from localStorage
+    document.getElementById('welcomeMessage').innerText =
+      `Welcome, ${localStorage.getItem("username") || "User"}`;
+
+    // Function to plot trajectory
+    function plotTrajectory() {
+      document.getElementById("chartSection").style.display = "block";
+
+      if (window.alreadyPlotted) return;
+      window.alreadyPlotted = true;
+
+      fetch("http://127.0.0.1:5000/api/aircraft")
+        .then(response => response.json())
+        .then(data => {
+          const time = data.time;
+          const posX = data.x;
+          const posY = data.y;
+          const posZ = data.z;
+
+          const plotChart = (canvasId, label, color, values) => {
+            new Chart(document.getElementById(canvasId), {
+              type: 'line',
+              data: {
+                labels: time,
+                datasets: [{
+                  label: label,
+                  data: values,
+                  borderColor: color,
+                  borderWidth: 2,
+                  fill: false,
+                  tension: 0.3
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    labels: { color: 'black' }
+                  }
+                },
+                scales: {
+                  x: {
+                    title: { display: true, text: 'Time', color: 'black' },
+                    ticks: { color: 'black' }
+                  },
+                  y: {
+                    title: { display: true, text: 'Position', color: 'black' },
+                    ticks: { color: 'black' }
+                  }
+                }
+              }
+            });
+          };
+
+          plotChart("chartX", "Time vs Position X", "cyan", posX);
+          plotChart("chartY", "Time vs Position Y", "magenta", posY);
+          plotChart("chartZ", "Time vs Position Z", "lime", posZ);
+        });
+    }
+  </script>
+
+</body>
+</html>
